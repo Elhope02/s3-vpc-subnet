@@ -41,3 +41,23 @@ resource "aws_route_table_association" "PublicRTassociation" {
   subnet_id = aws_subnet.Publicsubnet.id
   route_table_id = aws_route_table.PublicRT.id
 }
+# create an EC2 instance
+
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = "single-instance"
+
+  ami                    = "ami-08e637cea2f053dfa"
+  instance_type          = "t2.micro"
+  key_name               = "user1"
+  monitoring             = true
+  vpc_security_group_ids = ["sg-047c29622551033f9"]
+  subnet_id              = aws_vpc.myvpc.id
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
